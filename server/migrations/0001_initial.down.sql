@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS assets;
+DROP TABLE IF EXISTS inventory_items;
+DROP FUNCTION IF EXISTS set_updated_at;

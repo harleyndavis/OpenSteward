@@ -1,0 +1,10 @@
+{
+  "name": "opensteward",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --parallel run dev",
+    "build": "pnpm --filter client run build && pnpm --filter server run build",
+    "test": "pnpm --recursive run test"
+  }
+}

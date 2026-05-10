@@ -1,0 +1,28 @@
+{
+  "name": "@opensteward/server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/core/app.ts",
+    "build": "tsc",
+    "start": "node dist/core/app.js",
+    "test": "vitest run",
+    "migrate": "tsx src/core/migrate.ts up",
+    "migrate:down": "tsx src/core/migrate.ts down"
+  },
+  "dependencies": {
+    "@fastify/cors": "^10.0.0",
+    "dotenv": "^16.4.0",
+    "fastify": "^5.0.0",
+    "pg": "^8.13.0"
+  },
+  "devDependencies": {
+    "@opensteward/shared": "workspace:*",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

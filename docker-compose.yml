@@ -1,0 +1,55 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: opensteward
+      POSTGRES_USER: opensteward
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U opensteward"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+      target: dev
+    environment:
+      DATABASE_URL: postgresql://opensteward:${POSTGRES_PASSWORD:-secret}@db:5432/opensteward
+      APP_PORT: 3000
+      CHOKIDAR_USEPOLLING: 'true'
+    ports:
+      - "6736:3000"
+    volumes:
+      - ./server/src:/app/server/src
+      - ./server/migrations:/app/server/migrations
+      - ./shared:/app/shared
+    command: sh -c "pnpm migrate && pnpm exec tsx watch src/core/app.ts"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+      target: dev
+    environment:
+      VITE_API_TARGET: http://server:3000
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client/src:/app/client/src
+      - ./client/index.html:/app/client/index.html
+      - ./client/vite.config.ts:/app/client/vite.config.ts
+    depends_on:
+      - server
+
+volumes:
+  postgres_data:
